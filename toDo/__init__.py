@@ -17,6 +17,11 @@ def create_app():
         DATABASE=os.environ.get("FLASK_DATABASE"),
     )
 
+    # Llamo a la funcion init_app para definir el teardown
+    from . import db
+
+    db.init_app(app)
+
     @app.route("/test", methods=["GET"])
     def test():
         return "test OK", 200
