@@ -29,6 +29,24 @@ def close_db(e=None):
         db.close()
 
 
+def init_db():
+    db, c = get_db()
+
+    for i in instructions:
+        c.execute(i)
+
+    db.commit()
+
+
+# Inicia la base de datos
+@click.command("init-db")
+@with_appcontext
+def init_db_command():
+    init_db()
+    click.echo("Database initialized")
+
+
 # Define que cuando se haga termine de ejecutar la peticion llama la funcion close_db
 def init_app(app):
     app.teardown_appcontext(close_db)
+    app.cli.add_command(init_db_command)
