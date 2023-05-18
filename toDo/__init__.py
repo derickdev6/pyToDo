@@ -22,6 +22,12 @@ def create_app():
 
     db.init_app(app)
 
+    # Llamo la parte de auth
+
+    from . import auth
+
+    app.register_blueprint(auth.bp)
+
     @app.route("/test", methods=["GET"])
     def test():
         return "test OK", 200
