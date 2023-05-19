@@ -22,11 +22,13 @@ def create_app():
 
     db.init_app(app)
 
-    # Llamo la parte de auth
+    # Registro los Blueprints
 
     from . import auth
+    from . import toDo
 
     app.register_blueprint(auth.bp)
+    app.register_blueprint(toDo.bp)
 
     @app.route("/test", methods=["GET"])
     def test():
