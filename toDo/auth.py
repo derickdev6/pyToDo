@@ -66,8 +66,41 @@ def login():
         if error is None:
             session.clear()
             session["user_id"] = user["id"]
-            return redirect(url_for("index"))
+            return redirect(url_for("toDo.index"))
 
         flash(error)
 
     return render_template("auth/login.html")
+
+
+@bp.route("/logout", methods=["GET", "POST"])
+def logout():
+    session.clear()
+    return redirect(url_for("auth.login"))
+
+
+# Funcion decoradora, se encargara de requerir login
+@bp.before_app_request
+def load_logged_in_user():
+    user_id = session.get("user_id")
+
+    # Si es None es porque no hubo login
+    if user_id is None:
+        g.user = None
+    else:
+        db, c = get_db()
+
+        c.execute(f'select * from user where id = "{user_id}"')
+
+        g.user = c.fetchone()
+
+
+def login_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect(url_for("auth.login"))
+
+        return view(**kwargs)
+
+    return wrapped_view
