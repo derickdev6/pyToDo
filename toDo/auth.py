@@ -35,7 +35,7 @@ def register():
 
         if error is None:
             c.execute(
-                f"insert into user (username, password) values ({username}, {generate_password_hash(password)})"
+                f'insert into user (username, password) values ("{username}", "{generate_password_hash(password)}")'
             )
             db.commit()
 
